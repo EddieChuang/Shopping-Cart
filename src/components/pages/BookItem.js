@@ -16,8 +16,18 @@ class BookItem extends React.Component{
             _id: this.props._id,
             title: this.props.title,
             description: this.props.description,
-            price: this.props.price
+            price: this.props.price,
+            quantity: 1
         }];
+
+        if(this.props.cart.length > 0){
+            let _id = this.props._id;
+            let cartIndex = this.props.
+        } else {
+
+        }
+
+
         this.props.addToCart(book);
     }
     

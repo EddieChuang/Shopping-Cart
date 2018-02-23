@@ -40,7 +40,7 @@ class BooksList extends React.Component{
                     <Cart />
                 </Row>
                 <Row style={{marginTop:'15px'}}>
-                    <Col xs={12} sm={6} key={1}>
+                    <Col xs={12} sm={6}>
                         <BooksForm />
                     </Col>
                     {booksList}
