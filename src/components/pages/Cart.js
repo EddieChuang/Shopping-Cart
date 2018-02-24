@@ -2,7 +2,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {Panel, Col, Row, Well, Button, ButtonGroup, Label} from 'react-bootstrap';
-import {deleteCartItem} from '../../actions/cartActions';
+import {deleteCartItem, addToCart, updateCartItem} from '../../actions/cartActions';
 import {bindActionCreators} from 'redux';
 
 
@@ -16,6 +16,15 @@ class Cart extends React.Component{
 
         let cartAfterDelete = [...currentCartToDelete.slice(0, indexToDelete), ...currentCartToDelete.slice(indexToDelete + 1)];
         this.props.deleteCartItem(cartAfterDelete);
+    }
+
+    onIncrement(_id){
+        this.props.updateCartItem(_id, 1);
+    }
+
+    onDecrement(_id, quantity){
+        if(quantity > 1)
+            this.props.updateCartItem(_id, -1);
     }
 
 
@@ -47,8 +56,8 @@ class Cart extends React.Component{
                         </Col>
                         <Col xs={6} sm={4}>
                             <ButtonGroup style={{minWidth:'300px'}}>
-                                <Button bsStyle="default" bsSize="small">-</Button>
-                                <Button bsStyle="default" bsSize="small">+</Button>
+                                <Button onClick={this.onDecrement.bind(this, cartArr._id, cartArr.quantity)} bsStyle="default" bsSize="small">-</Button>
+                                <Button onClick={this.onIncrement.bind(this, cartArr._id)} bsStyle="default" bsSize="small">+</Button>
                                 <span>     </span>
                                 <Button onClick={this.onDelete.bind(this, cartArr._id)} bsStyle="danger" bsSize="small">DELETE</Button>
                             </ButtonGroup>
@@ -74,7 +83,10 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch){
     return bindActionCreators({
-        deleteCartItem: deleteCartItem
+        deleteCartItem: deleteCartItem,
+        addToCart: addToCart,
+        updateCartItem: updateCartItem       
+        
     }, dispatch);
 }
 
