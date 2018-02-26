@@ -6215,12 +6215,24 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.addToCart = addToCart;
+exports.updateCart = updateCart;
 exports.deleteCartItem = deleteCartItem;
 function addToCart(book) {
 
     return {
         type: "ADD_TO_CART",
         payload: book
+    };
+}
+
+function updateCart(_id, unit) {
+
+    return {
+        type: "UPDATE_CART",
+        payload: {
+            _id: _id,
+            unit: unit
+        }
     };
 }
 
@@ -29521,6 +29533,9 @@ function booksReducers() {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 exports.cartReducers = cartReducers;
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
@@ -29534,6 +29549,23 @@ function cartReducers() {
     switch (action.type) {
         case "ADD_TO_CART":
             return { cart: [].concat(_toConsumableArray(state.cart), _toConsumableArray(action.payload)) };
+
+        case "UPDATE_CART":
+            var currentCartToUpdate = [].concat(_toConsumableArray(state.cart));
+            var indexToUpdate = currentCartToUpdate.findIndex(function (cart) {
+                return cart._id === action.payload._id;
+            });
+
+            var newCartToUpdate = _extends({}, currentCartToUpdate[indexToUpdate], {
+                quantity: currentCartToUpdate[indexToUpdate].quantity + action.payload.unit
+            });
+
+            var cartUpdate = [].concat(_toConsumableArray(currentCartToUpdate.slice(0, indexToUpdate)), [newCartToUpdate], _toConsumableArray(currentCartToUpdate.slice(indexToUpdate + 1)));
+
+            return _extends({}, state, {
+                cart: cartUpdate
+            });
+
         case "DELETE_CART_ITEM":
             return { cart: [].concat(_toConsumableArray(action.payload)) };
 
@@ -41129,10 +41161,135 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 /***/ }),
 /* 342 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-throw new Error("Module build failed: SyntaxError: C:/Users/yzu/Desktop/chiamin_git/Shopping-Cart/src/components/pages/BookItem.js: Unexpected token (26:8)\n\n\u001b[0m \u001b[90m 24 | \u001b[39m            let _id \u001b[33m=\u001b[39m \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mprops\u001b[33m.\u001b[39m_id\u001b[33m;\u001b[39m\n \u001b[90m 25 | \u001b[39m            let cartIndex \u001b[33m=\u001b[39m \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mprops\u001b[33m.\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 26 | \u001b[39m        } \u001b[36melse\u001b[39m {\n \u001b[90m    | \u001b[39m        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 27 | \u001b[39m\n \u001b[90m 28 | \u001b[39m        }\n \u001b[90m 29 | \u001b[39m\u001b[0m\n");
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactBootstrap = __webpack_require__(49);
+
+var _reactRedux = __webpack_require__(38);
+
+var _redux = __webpack_require__(27);
+
+var _cartActions = __webpack_require__(108);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var BookItem = function (_React$Component) {
+    _inherits(BookItem, _React$Component);
+
+    function BookItem() {
+        _classCallCheck(this, BookItem);
+
+        return _possibleConstructorReturn(this, (BookItem.__proto__ || Object.getPrototypeOf(BookItem)).apply(this, arguments));
+    }
+
+    _createClass(BookItem, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            console.log("BookItem componentDidMount");
+        }
+    }, {
+        key: 'handleCart',
+        value: function handleCart() {
+            // console.log(this.props.cart);
+            var book = [{
+                _id: this.props._id,
+                title: this.props.title,
+                description: this.props.description,
+                price: this.props.price,
+                quantity: 1
+            }];
+
+            if (this.props.cart.length > 0) {
+                var _id = this.props._id;
+                var cartIndex = this.props.cart.findIndex(function (cart) {
+                    return cart._id === _id;
+                });
+
+                if (cartIndex === -1) {
+                    this.props.addToCart(book);
+                } else {
+                    this.props.updateCart(_id, 1);
+                }
+            } else {
+                this.props.addToCart(book);
+            }
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            console.log("BookItem render");
+            return _react2.default.createElement(
+                _reactBootstrap.Well,
+                null,
+                _react2.default.createElement(
+                    _reactBootstrap.Row,
+                    null,
+                    _react2.default.createElement(
+                        _reactBootstrap.Col,
+                        { xs: 12 },
+                        _react2.default.createElement(
+                            'h6',
+                            null,
+                            this.props.title
+                        ),
+                        _react2.default.createElement(
+                            'p',
+                            null,
+                            this.props.description
+                        ),
+                        _react2.default.createElement(
+                            'h6',
+                            null,
+                            'USD. ',
+                            this.props.price
+                        ),
+                        _react2.default.createElement(
+                            _reactBootstrap.Button,
+                            { onClick: this.handleCart.bind(this), bsStyle: 'primary' },
+                            'Buy now'
+                        )
+                    )
+                )
+            );
+        }
+    }]);
+
+    return BookItem;
+}(_react2.default.Component);
+
+function mapStateToProps(state) {
+    return {
+        cart: state.cart.cart
+    };
+}
+
+function mapDispatchToProps(dispatch) {
+    return (0, _redux.bindActionCreators)({
+        addToCart: _cartActions.addToCart,
+        updateCart: _cartActions.updateCart
+    }, dispatch);
+}
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(BookItem);
 
 /***/ }),
 /* 343 */
@@ -41321,6 +41478,16 @@ var Cart = function (_React$Component) {
             this.props.deleteCartItem(cartAfterDelete);
         }
     }, {
+        key: 'onIncrement',
+        value: function onIncrement(_id) {
+            this.props.updateCart(_id, 1);
+        }
+    }, {
+        key: 'onDecrement',
+        value: function onDecrement(_id, quantity) {
+            if (quantity > 1) this.props.updateCart(_id, -1);
+        }
+    }, {
         key: 'render',
         value: function render() {
             if (this.props.cart[0]) {
@@ -41390,12 +41557,12 @@ var Cart = function (_React$Component) {
                                 { style: { minWidth: '300px' } },
                                 _react2.default.createElement(
                                     _reactBootstrap.Button,
-                                    { bsStyle: 'default', bsSize: 'small' },
+                                    { onClick: this.onDecrement.bind(this, cartArr._id, cartArr.quantity), bsStyle: 'default', bsSize: 'small' },
                                     '-'
                                 ),
                                 _react2.default.createElement(
                                     _reactBootstrap.Button,
-                                    { bsStyle: 'default', bsSize: 'small' },
+                                    { onClick: this.onIncrement.bind(this, cartArr._id), bsStyle: 'default', bsSize: 'small' },
                                     '+'
                                 ),
                                 _react2.default.createElement(
@@ -41432,7 +41599,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return (0, _redux.bindActionCreators)({
-        deleteCartItem: _cartActions.deleteCartItem
+        deleteCartItem: _cartActions.deleteCartItem,
+        updateCart: _cartActions.updateCart
     }, dispatch);
 }
 
