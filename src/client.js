@@ -1,6 +1,7 @@
 "use strict"
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {Router, Route, IndexRoute, browserHistory} from 'react-router';
 import {Provodier, Provider} from 'react-redux';
 
 
@@ -10,7 +11,12 @@ import {addToCart} from './actions/cartActions';
 import {postBooks, deleteBooks, updateBooks} from './actions/booksActions';
 import logger from 'redux-logger';
 
-import BooksList from './components/pages/BooksList'
+import BooksList from './components/pages/BooksList';
+import Cart from './components/pages/Cart';
+import BooksForm from './components/pages/BooksForm';
+import Main from './components/Main';
+
+
 
 const middleware = applyMiddleware(logger);
 const store = createStore(reducers, middleware);
@@ -19,11 +25,22 @@ const store = createStore(reducers, middleware);
 // })
 console.log(store.getState());
 console.log("ReactDOM start");
-ReactDOM.render(
+
+const Routes = (
     <Provider store={store}>
-        <BooksList />
+        <Router history={browserHistory}>
+            <Route path="/" component={Main}>
+                <IndexRoute component={BooksList} />
+                <Route path="/admin" component={BooksForm} />
+                <Route path="/cart" component={Cart} />
+            </Route>
+        </Router>
     </Provider>
-        , document.getElementById("app")
+)
+
+ReactDOM.render(
+    
+    Routes, document.getElementById("app")
 );
 console.log("ReactDOM end");
 

@@ -1,12 +1,17 @@
 "use strict"
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM, { findDOMNode } from 'react-dom';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Well, Panel, FormControl, FormGroup, ControlLabel, Button} from 'react-bootstrap';
-import {postBooks} from '../../actions/booksActions';
+import {postBooks, deleteBooks} from '../../actions/booksActions';
 
 class BooksForm extends React.Component{
+
+    componentDidMount(){
+        console.log("BooksForms componentDidMount");
+        
+    }
 
     handleSubmit(){
         const book = [{
@@ -18,13 +23,20 @@ class BooksForm extends React.Component{
         this.props.postBooks(book);
     }
 
-    componentDidMount(){
-        console.log("BooksForms componentDidMount");
-        
+    onDelete(){
+        let bookId = findDOMNode(this.refs.delete).value;
+        this.props.deleteBooks(bookId);
     }
 
     render(){
         console.log("BooksForms render");
+
+        const booksList = this.props.books.map(function(booksArr){
+            return (
+                <option key={booksArr._id}>{booksArr._id}</option>
+            )
+        })
+        console.log(booksList);
         return(
             <Well>
                 <Panel>
@@ -51,14 +63,34 @@ class BooksForm extends React.Component{
                     </FormGroup>
                     <Button onClick={this.handleSubmit.bind(this)} bsStyle="primary">Save book</Button>
                 </Panel>
+                <Panel style={{marginTop:'25px'}}>
+                    <FormGroup controlId="formControlsSelect">
+                        <ControlLabel>Select a book id to delete</ControlLabel>
+                        <FormControl ref="delete" componentClass="select" placeholder="select">
+                            <option value="select">select</option>
+                            {booksList}
+                        </FormControl>
+                    </FormGroup>
+                    <Button onClick={this.onDelete.bind(this)} bsStyle="danger">Delete book</Button>
+                </Panel>
             </Well>
         )
     }
 }
 
-function mapDispatchToProps(dispatch){
-    console.log("BooksForm mapDispatchToProps");
-    return bindActionCreators({postBooks:postBooks}, dispatch);
+function mapStateToProps(state){
+    console.log("BooksForm mapStateToProps");
+    return {
+        books: state.books.books
+    };
 }
 
-export default connect(null, mapDispatchToProps)(BooksForm);
+function mapDispatchToProps(dispatch){
+    console.log("BooksForm mapDispatchToProps");
+    return bindActionCreators({
+        postBooks:postBooks,
+        deleteBooks: deleteBooks
+    }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(BooksForm);

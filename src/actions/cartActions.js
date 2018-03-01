@@ -9,10 +9,10 @@ export function addToCart(book){
     };
 }
 
-export function updateCartItem(_id, unit){
+export function updateCart(_id, unit){
     
     return {
-        type:"UPDATE_CART_ITEM", 
+        type:"UPDATE_CART", 
         payload: {
             _id: _id,
             unit: unit
