@@ -2,24 +2,13 @@
 
 // BOOKS REDUCER
 export function booksReducers(state={
-    books:[{
-        _id:1,
-        title: 'this is the book title',
-        description: 'this is the book description',
-        price: 33.33
-    },
-    {
-        _id: 2,
-        title: 'this is the book title',
-        description: 'this is the book description',
-        price: 44.44
-    }]
+    books:[]
     }, action){
 
     console.log("booksReducers", action);
     switch(action.type){
         case "GET_BOOK":
-            return {...state, books:[...state.books]};
+            return {...state, books:[...action.payload]};
             break;
         case "POST_BOOK":
             // let books = state.books.concat(action.payload);

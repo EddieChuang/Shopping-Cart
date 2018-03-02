@@ -10,6 +10,7 @@ import reducers from './reducers';
 import {addToCart} from './actions/cartActions';
 import {postBooks, deleteBooks, updateBooks} from './actions/booksActions';
 import logger from 'redux-logger';
+import thunk from 'redux-thunk';
 
 import BooksList from './components/pages/BooksList';
 import Cart from './components/pages/Cart';
@@ -18,7 +19,7 @@ import Main from './components/Main';
 
 
 
-const middleware = applyMiddleware(logger);
+const middleware = applyMiddleware(thunk, logger);
 const store = createStore(reducers, middleware);
 // store.subscribe(function(){
 //     console.log('current state is: ', store.getState());

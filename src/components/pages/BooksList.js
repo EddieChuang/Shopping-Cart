@@ -14,7 +14,7 @@ class BooksList extends React.Component{
     componentDidMount(){
         // Dispatch an action
         console.log("BooksList componentDidMount");
-        // this.props.getBooks();
+        this.props.getBooks();
     }
 
     render(){
