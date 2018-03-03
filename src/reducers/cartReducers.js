@@ -5,6 +5,16 @@ export function cartReducers(state={cart:[]}, action){
     
     console.log("cartReducers", action);    
     switch(action.type){
+        
+        case "GET_CART":
+            return {
+                ...state,
+                cart:action.payload,
+                totalAmount: totals(action.payload).amount,
+                quantity: totals(action.payload).quantity
+                
+            };
+
         case "ADD_TO_CART":
             let newCart = [...state.cart, ...action.payload];
             return {
@@ -15,23 +25,12 @@ export function cartReducers(state={cart:[]}, action){
             };
         
         case "UPDATE_CART":
-            const currentCartToUpdate = [...state.cart];
-            const indexToUpdate = currentCartToUpdate.findIndex(function(cart){
-                return cart._id === action.payload._id;
-            });
-            
-            const newCartToUpdate = {
-                ...currentCartToUpdate[indexToUpdate],
-                quantity: currentCartToUpdate[indexToUpdate].quantity + action.payload.unit
-            };
-
-            let cartUpdate = [...currentCartToUpdate.slice(0, indexToUpdate), newCartToUpdate, ...currentCartToUpdate.slice(indexToUpdate + 1)];
-
+           
             return { 
                 ...state,
-                cart: cartUpdate,
-                totalAmount: totals(cartUpdate).amount,
-                quantity: totals(cartUpdate).quantity
+                cart: action.payload,
+                totalAmount: totals(action.payload).amount,
+                quantity: totals(action.payload).quantity
                 
             };
 
@@ -41,7 +40,6 @@ export function cartReducers(state={cart:[]}, action){
                 totalAmount: totals(action.payload).amount,    
                 quantity: totals(action.payload).quantity
             };
-
     }
     
     return state;

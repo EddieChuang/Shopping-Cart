@@ -5378,39 +5378,95 @@ module.exports = g;
 "use strict";
 
 
-// ADD TO CART
-
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+exports.getCart = getCart;
 exports.addToCart = addToCart;
 exports.updateCart = updateCart;
 exports.deleteCartItem = deleteCartItem;
-function addToCart(book) {
 
-    return {
-        type: "ADD_TO_CART",
-        payload: book
+var _axios = __webpack_require__(258);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+// GET CART
+function getCart(cart) {
+
+    return function (dispatch) {
+        _axios2.default.get('/api/cart').then(function (response) {
+            dispatch({ type: "GET_CART", payload: response.data });
+        }).catch(function (err) {
+            dispatch({ type: "GET_CART_REJECTED", msg: "error when getting the cart" });
+        });
     };
 }
 
-function updateCart(_id, unit) {
+// ADD TO CART
+function addToCart(cart) {
 
-    return {
-        type: "UPDATE_CART",
-        payload: {
-            _id: _id,
-            unit: unit
-        }
+    return function (dispatch) {
+        _axios2.default.post('/api/cart', cart).then(function (response) {
+            dispatch({ type: "ADD_TO_CART", payload: response.data });
+        }).catch(function (err) {
+            dispatch({ type: "ADD_TO_CART_REJECTED", msg: "error when adding to the cart" });
+        });
     };
+    // return {
+    //     type:"ADD_TO_CART", 
+    //     payload:book
+    // };
+}
+
+function updateCart(_id, unit, cart) {
+
+    var currentCartToUpdate = cart;
+    var indexToUpdate = currentCartToUpdate.findIndex(function (cart) {
+        return cart._id === _id;
+    });
+
+    var newCartToUpdate = _extends({}, currentCartToUpdate[indexToUpdate], {
+        quantity: currentCartToUpdate[indexToUpdate].quantity + unit
+    });
+
+    var cartUpdate = [].concat(_toConsumableArray(currentCartToUpdate.slice(0, indexToUpdate)), [newCartToUpdate], _toConsumableArray(currentCartToUpdate.slice(indexToUpdate + 1)));
+
+    return function (dispatch) {
+        _axios2.default.post('/api/cart', cartUpdate).then(function (response) {
+            dispatch({ type: "UPDATE_CART", payload: response.data });
+        }).catch(function (err) {
+            dispatch({ type: "UPDATE_CART_REJECTED", msg: "error when updating the cart" });
+        });
+    };
+
+    // return {
+    //     type:"UPDATE_CART", 
+    //     payload: cartUpdate
+
+    // };
 }
 
 function deleteCartItem(cart) {
 
-    return {
-        type: "DELETE_CART_ITEM",
-        payload: cart
+    return function (dispatch) {
+        _axios2.default.post('/api/cart', cart).then(function (response) {
+            dispatch({ type: "DELETE_CART_ITEM", payload: response.data });
+        }).catch(function (err) {
+            dispatch({ type: "DELETE_CART_ITEM_REJECTED", msg: "error when deleting the cart" });
+        });
     };
+
+    // return {
+    //     type:"DELETE_CART_ITEM", 
+    //     payload: cart
+    // };
 }
 
 /***/ }),
@@ -5436,6 +5492,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function getBooks() {
     return function (dispatch) {
+        console.log("getBooks()");
         _axios2.default.get('/api/books').then(function (response) {
             console.log(response);
             dispatch({ type: "GET_BOOK", payload: response.data });
@@ -13612,6 +13669,11 @@ var Cart = function (_React$Component) {
     }
 
     _createClass(Cart, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            this.props.getCart();
+        }
+    }, {
         key: 'open',
         value: function open() {
             this.setState({ show: true });
@@ -13635,12 +13697,12 @@ var Cart = function (_React$Component) {
     }, {
         key: 'onIncrement',
         value: function onIncrement(_id) {
-            this.props.updateCart(_id, 1);
+            this.props.updateCart(_id, 1, this.props.cart);
         }
     }, {
         key: 'onDecrement',
         value: function onDecrement(_id, quantity) {
-            if (quantity > 1) this.props.updateCart(_id, -1);
+            if (quantity > 1) this.props.updateCart(_id, -1, this.props.cart);
         }
     }, {
         key: 'render',
@@ -13822,7 +13884,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return (0, _redux.bindActionCreators)({
         deleteCartItem: _cartActions.deleteCartItem,
-        updateCart: _cartActions.updateCart
+        updateCart: _cartActions.updateCart,
+        getCart: _cartActions.getCart
     }, dispatch);
 }
 
@@ -36376,6 +36439,15 @@ function cartReducers() {
 
     console.log("cartReducers", action);
     switch (action.type) {
+
+        case "GET_CART":
+            return _extends({}, state, {
+                cart: action.payload,
+                totalAmount: totals(action.payload).amount,
+                quantity: totals(action.payload).quantity
+
+            });
+
         case "ADD_TO_CART":
             var newCart = [].concat(_toConsumableArray(state.cart), _toConsumableArray(action.payload));
             return {
@@ -36386,21 +36458,11 @@ function cartReducers() {
             };
 
         case "UPDATE_CART":
-            var currentCartToUpdate = [].concat(_toConsumableArray(state.cart));
-            var indexToUpdate = currentCartToUpdate.findIndex(function (cart) {
-                return cart._id === action.payload._id;
-            });
-
-            var newCartToUpdate = _extends({}, currentCartToUpdate[indexToUpdate], {
-                quantity: currentCartToUpdate[indexToUpdate].quantity + action.payload.unit
-            });
-
-            var cartUpdate = [].concat(_toConsumableArray(currentCartToUpdate.slice(0, indexToUpdate)), [newCartToUpdate], _toConsumableArray(currentCartToUpdate.slice(indexToUpdate + 1)));
 
             return _extends({}, state, {
-                cart: cartUpdate,
-                totalAmount: totals(cartUpdate).amount,
-                quantity: totals(cartUpdate).quantity
+                cart: action.payload,
+                totalAmount: totals(action.payload).amount,
+                quantity: totals(action.payload).quantity
 
             });
 
@@ -36410,7 +36472,6 @@ function cartReducers() {
                 totalAmount: totals(action.payload).amount,
                 quantity: totals(action.payload).quantity
             };
-
     }
 
     return state;

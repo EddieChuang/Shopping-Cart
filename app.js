@@ -15,7 +15,6 @@ const apiProxy = new httpProxy.createProxyServer({
   target:'http://localhost:3001'
 });
 app.use('/api', function(req, res){
-  console.log(req);
   apiProxy.web(req, res);
 })
 

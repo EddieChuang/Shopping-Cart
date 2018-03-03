@@ -3,6 +3,7 @@ import axios from 'axios';
 
 export function getBooks(){
     return function(dispatch){
+        console.log("getBooks()");
         axios.get('/api/books')
           .then(function(response){
               console.log(response);
