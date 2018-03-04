@@ -9,12 +9,24 @@ export function booksReducers(state={
     switch(action.type){
         case "GET_BOOK":
             return {...state, books:[...action.payload]};
-            break;
+        
         case "POST_BOOK":
             // let books = state.books.concat(action.payload);
             // return {books};
-            return {books:[...state.books, ...action.payload]};
-            break;
+            return {
+                books:[...state.books, ...action.payload], 
+                msg:'Saved! Click to continue', 
+                style:'success',
+                validation:'success'
+            };
+
+        case "POST_BOOK_REJECTED":
+            return {
+                ...state, 
+                msg:'Please, try again',
+                style:'danger',
+                validation:'error'
+            };
 
         case "DELETE_BOOK":
             const currentBookToDelete = [...state.books];
@@ -38,6 +50,15 @@ export function booksReducers(state={
             // console.log('what is it newBookToUpdate', newBookToUpdate);
             return {books: [...currentBookToUpdate.slice(0, indexToUpdate), newBookToUpdate, ...currentBookToUpdate.slice(indexToUpdate + 1)]};
 
+        case "RESET_BUTTON":
+             return {
+                 ...state,
+                 msg:null, 
+                 style:'primary',
+                 validation:null
+                 
+                };
+        
     }
     // Reducer "books" returned undefined during initialization.
     return state;

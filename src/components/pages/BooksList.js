@@ -3,7 +3,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {getBooks} from '../../actions/booksActions';
-import {Grid, Col, Row, Button} from 'react-bootstrap';
+import {Carousel, Grid, Col, Row, Button} from 'react-bootstrap';
 import BookItem from './BookItem';
 import BooksForm from './BooksForm';
 import Cart from './Cart';
@@ -11,11 +11,15 @@ import Cart from './Cart';
 
 class BooksList extends React.Component{
 
+    
+
     componentDidMount(){
         // Dispatch an action
         console.log("BooksList componentDidMount");
         this.props.getBooks();
     }
+
+    
 
     render(){
         
@@ -27,6 +31,7 @@ class BooksList extends React.Component{
                         _id={booksArr._id}
                         title={booksArr.title}
                         description={booksArr.description}
+                        images={booksArr.images}
                         price={booksArr.price}
                      />
                 </Col>
@@ -37,12 +42,35 @@ class BooksList extends React.Component{
         return(
             <Grid>
                 <Row>
+                    <Carousel>
+                        <Carousel.Item>
+                            <img width={900} height={500} alt="900x500" src="/images/camino1.jpg" />
+                            <Carousel.Caption>
+                            <h3>First slide label</h3>
+                            <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+                            </Carousel.Caption>
+                        </Carousel.Item>
+                        <Carousel.Item>
+                            <img width={900} height={500} alt="900x500" src="/images/camino2.jpg" />
+                            <Carousel.Caption>
+                            <h3>Second slide label</h3>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                            </Carousel.Caption>
+                        </Carousel.Item>
+                        <Carousel.Item>
+                            <img width={900} height={500} alt="900x500" src="/images/camino3.jpg" />
+                            <Carousel.Caption>
+                            <h3>Third slide label</h3>
+                            <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
+                            </Carousel.Caption>
+                        </Carousel.Item>
+                    </Carousel>
+
+                </Row>
+                <Row>
                     <Cart />
                 </Row>
                 <Row style={{marginTop:'15px'}}>
-                    <Col xs={12} sm={6}>
-                        <BooksForm />
-                    </Col>
                     {booksList}
                 </Row>
             </Grid>

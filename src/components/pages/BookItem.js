@@ -1,13 +1,25 @@
 import React from 'react';
-import {Row, Col, Well, Button} from 'react-bootstrap';
+import {Image, Row, Col, Well, Button} from 'react-bootstrap';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {addToCart, updateCart} from '../../actions/cartActions';
 
 class BookItem extends React.Component{
 
+
+    constructor(){
+        super();
+        this.state = {
+            isClicked: false
+        };
+    }
+    
     componentDidMount(){
         console.log("BookItem componentDidMount")
+    }
+
+    onReadMore(){
+        this.setState({isClicked:true});
     }
 
     handleCart(){
@@ -17,6 +29,7 @@ class BookItem extends React.Component{
             title: this.props.title,
             description: this.props.description,
             price: this.props.price,
+            images: this.props.images,
             quantity: 1
         }];
 
@@ -45,9 +58,18 @@ class BookItem extends React.Component{
         return(
             <Well>
                 <Row>
-                    <Col xs={12}>
+                    <Col xs={12} sm={4}>
+                        <Image src={this.props.images} responsive/>
+                    </Col>
+                    <Col xs={6} sm={8}>
                         <h6>{this.props.title}</h6>
-                        <p>{this.props.description}</p>
+                        <p>{(this.props.description.length > 50 && this.state.isClicked === false) ?
+                            (this.props.description.substring(0, 50)) : (this.props.description)}
+                            <button className='link' onClick={this.onReadMore.bind(this)}>
+                            {(this.state.isClicked === false && this.props.description !== null && 
+                              this.props.description.length > 50)?('...read more'):('')}
+                            </button>
+                        </p>
                         <h6>USD. {this.props.price}</h6>
                         <Button onClick={this.handleCart.bind(this)} bsStyle='primary'>Buy now</Button>
                     </Col>
