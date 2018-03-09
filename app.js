@@ -1,3 +1,7 @@
+require('babel-core/register')({
+  'presets': ['es2015', 'react', 'stage-1']
+})
+
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -25,11 +29,10 @@ app.use(logger('dev'));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-// END APIs
+app.set('view engine', 'ejs');
 
-app.get('*', function(req, res){
-  res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
-});
+var requestHandler = require('./requestHandler');
+app.use(requestHandler);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

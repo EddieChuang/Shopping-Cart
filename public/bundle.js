@@ -14007,6 +14007,14 @@ var _reactRouter = __webpack_require__(203);
 
 var _reactRedux = __webpack_require__(38);
 
+var _reduxLogger = __webpack_require__(277);
+
+var _reduxLogger2 = _interopRequireDefault(_reduxLogger);
+
+var _reduxThunk = __webpack_require__(278);
+
+var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
+
 var _redux = __webpack_require__(25);
 
 var _reducers = __webpack_require__(256);
@@ -14017,73 +14025,26 @@ var _cartActions = __webpack_require__(60);
 
 var _booksActions = __webpack_require__(87);
 
-var _reduxLogger = __webpack_require__(277);
+var _routes = __webpack_require__(430);
 
-var _reduxLogger2 = _interopRequireDefault(_reduxLogger);
-
-var _reduxThunk = __webpack_require__(278);
-
-var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
-
-var _BooksList = __webpack_require__(279);
-
-var _BooksList2 = _interopRequireDefault(_BooksList);
-
-var _Cart = __webpack_require__(191);
-
-var _Cart2 = _interopRequireDefault(_Cart);
-
-var _BooksForm = __webpack_require__(190);
-
-var _BooksForm2 = _interopRequireDefault(_BooksForm);
-
-var _Main = __webpack_require__(427);
-
-var _Main2 = _interopRequireDefault(_Main);
+var _routes2 = _interopRequireDefault(_routes);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var middleware = (0, _redux.applyMiddleware)(_reduxThunk2.default, _reduxLogger2.default);
-var store = (0, _redux.createStore)(_reducers2.default, middleware);
-// store.subscribe(function(){
-//     console.log('current state is: ', store.getState());
-// })
-console.log(store.getState());
-console.log("ReactDOM start");
+var initialState = window.INITIAL_STATE;
+
+var store = (0, _redux.createStore)(_reducers2.default, initialState, middleware);
 
 var Routes = _react2.default.createElement(
-    _reactRedux.Provider,
-    { store: store },
-    _react2.default.createElement(
-        _reactRouter.Router,
-        { history: _reactRouter.browserHistory },
-        _react2.default.createElement(
-            _reactRouter.Route,
-            { path: '/', component: _Main2.default },
-            _react2.default.createElement(_reactRouter.IndexRoute, { component: _BooksList2.default }),
-            _react2.default.createElement(_reactRouter.Route, { path: '/admin', component: _BooksForm2.default }),
-            _react2.default.createElement(_reactRouter.Route, { path: '/cart', component: _Cart2.default })
-        )
-    )
+  _reactRedux.Provider,
+  { store: store },
+  _routes2.default
 );
 
+console.log("ReactDOM start");
 _reactDom2.default.render(Routes, document.getElementById("app"));
 console.log("ReactDOM end");
-
-// store.dispatch(postBooks(
-
-// ));
-
-// store.dispatch(deleteBooks({id:1}));
-
-// store.dispatch(updateBooks(
-//     {
-//         id: 2,
-//         title: 'Learning React in 24H',
-//     }
-// ));
-
-// store.dispatch(addToCart([{id:3}]));
 
 /***/ }),
 /* 193 */
@@ -49565,6 +49526,59 @@ var Footer = function (_React$Component) {
 }(_react2.default.Component);
 
 exports.default = Footer;
+
+/***/ }),
+/* 430 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = __webpack_require__(14);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _reactRouter = __webpack_require__(203);
+
+var _BooksList = __webpack_require__(279);
+
+var _BooksList2 = _interopRequireDefault(_BooksList);
+
+var _Cart = __webpack_require__(191);
+
+var _Cart2 = _interopRequireDefault(_Cart);
+
+var _BooksForm = __webpack_require__(190);
+
+var _BooksForm2 = _interopRequireDefault(_BooksForm);
+
+var _Main = __webpack_require__(427);
+
+var _Main2 = _interopRequireDefault(_Main);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var routes = _react2.default.createElement(
+  _reactRouter.Router,
+  { history: _reactRouter.browserHistory },
+  _react2.default.createElement(
+    _reactRouter.Route,
+    { path: '/', component: _Main2.default },
+    _react2.default.createElement(_reactRouter.IndexRoute, { component: _BooksList2.default }),
+    _react2.default.createElement(_reactRouter.Route, { path: '/admin', component: _BooksForm2.default }),
+    _react2.default.createElement(_reactRouter.Route, { path: '/cart', component: _Cart2.default })
+  )
+);
+
+exports.default = routes;
 
 /***/ })
 /******/ ]);
